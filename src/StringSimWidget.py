@@ -30,7 +30,7 @@ class StringSimWidget(QWidget):
   
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.step)
-        self.timer.start(100)
+        self.timer.start(50)
         
         #self.loop()
 

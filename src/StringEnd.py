@@ -11,7 +11,7 @@ class StringEnd:
     def link(self, next_el):
         self.next_el = next_el
 
-    def update_acceleration(self):
+    def update_acceleration(self, k):
         pass
     
     def update_velocity(self, k):

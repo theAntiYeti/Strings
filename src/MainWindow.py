@@ -11,10 +11,10 @@ from StringChain import StringChain
 
 
 def sin_dyna(t):
-    return Vector(int(20*math.cos(t)), 0)
+    return Vector(20*math.cos(t),20*math.sin(t))
 
 pos = [Vector(i*20, 0) for i in range(25+1)]
-chain = StringChain(pos, Vector(0, -1), 3, left_dyna=sin_dyna)
+chain = StringChain(pos, Vector(-1, -1), 2, dampening=1, left_dyna=sin_dyna)
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):

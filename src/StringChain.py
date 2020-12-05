@@ -3,8 +3,8 @@ from Vector import Vector
 from StringEnd import StringEnd
 
 class StringChain:
-    def __init__(self, pos_array, grav, spring_const, left_dyna=None, right_dyna=None):
-        self.points = [StringElement(pos, grav, spring_const) for pos in pos_array]
+    def __init__(self, pos_array, grav, spring_const, dampening=0, left_dyna=None, right_dyna=None):
+        self.points = [StringElement(pos, grav, spring_const, dampening=dampening) for pos in pos_array]
         self.points[0] = StringEnd(pos_array[0], left_dyna)
         self.points[-1] = StringEnd(pos_array[-1], right_dyna)
 
@@ -17,7 +17,7 @@ class StringChain:
 
     def step(self, time_step):
         for point in self.points:
-            point.update_acceleration()
+            point.update_acceleration(time_step)
         for point in self.points:
             point.update_velocity(time_step)
             point.update_position(time_step)
