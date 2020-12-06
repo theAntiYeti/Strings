@@ -7,6 +7,7 @@ from PyQt5 import QtGui
 from Vector import Vector
 from StringChain import StringChain
 from MainWindow import MainWindow
+
 class SelectionWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -27,6 +28,9 @@ class SelectionWindow(QtWidgets.QMainWindow):
         self.stiff_selector = QtWidgets.QLineEdit()
         self.ts_selector    = QtWidgets.QLineEdit()
         self.su_selector    = QtWidgets.QLineEdit() # Speedup
+        self.damp_selector  = QtWidgets.QLineEdit()
+
+        self.g_x_selector   = QtWidgets.QLineEdit()
         self.g_y_selector   = QtWidgets.QLineEdit()
 
         # Create labels.
@@ -38,6 +42,9 @@ class SelectionWindow(QtWidgets.QMainWindow):
         self.stiff_label    = QtWidgets.QLabel()
         self.ts_label       = QtWidgets.QLabel()
         self.su_label       = QtWidgets.QLabel()
+        self.damp_label     = QtWidgets.QLabel()
+
+        self.g_x_label      = QtWidgets.QLabel()
         self.g_y_label      = QtWidgets.QLabel()
 
         self.width_label.setText("Width: ")
@@ -48,7 +55,10 @@ class SelectionWindow(QtWidgets.QMainWindow):
         self.stiff_label.setText("Stiffness: ")
         self.ts_label.setText("Time Step: ")
         self.su_label.setText("Speed Up: ")
-        self.g_y_label.setText("Gravity: ")
+        self.damp_label.setText("Dampening: ")
+
+        self.g_x_label.setText("Gravity x (left): ")
+        self.g_y_label.setText("Gravity y: ")
 
 
         # Setup Grid.
@@ -60,9 +70,11 @@ class SelectionWindow(QtWidgets.QMainWindow):
         self.layout.addWidget(self.stiff_label,0,2); self.layout.addWidget(self.stiff_selector,0,3)
         self.layout.addWidget(self.ts_label,1,2); self.layout.addWidget(self.ts_selector,1,3)
         self.layout.addWidget(self.su_label,2,2); self.layout.addWidget(self.su_selector,2,3)
-        self.layout.addWidget(self.g_y_label,3,2); self.layout.addWidget(self.g_y_selector,3,3)
+        self.layout.addWidget(self.damp_label,3,2); self.layout.addWidget(self.damp_selector,3,3)
 
-
+        self.layout.addWidget(self.g_x_label, 0,4); self.layout.addWidget(self.g_x_selector, 0,5)
+        self.layout.addWidget(self.g_y_label, 1,4); self.layout.addWidget(self.g_y_selector, 1,5)
+        
         # Setup run button.
         self.runbutton = QtWidgets.QPushButton()
         self.runbutton.setText("Run")
@@ -81,9 +93,12 @@ class SelectionWindow(QtWidgets.QMainWindow):
             stiffness = float(self.stiff_selector.text())
             time_step = float(self.ts_selector.text())
             speedup   = float(self.su_selector.text())
+            dampening = float(self.damp_selector.text())
+
+            g_x       = float(self.g_x_selector.text())
             g_y       = float(self.g_y_selector.text())
 
-            chain = StringChain(pos, Vector(0,-g_y), stiffness)
+            chain = StringChain(pos, Vector(g_x,-g_y), stiffness, dampening=dampening)
 
             self.display = MainWindow(width, pad, height, chain, time_step=time_step, speedup=speedup)
             self.display.show()
