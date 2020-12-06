@@ -7,6 +7,7 @@ from PyQt5 import QtGui
 from Vector import Vector
 from StringChain import StringChain
 from MainWindow import MainWindow
+from DynaSelectionWidget import DynaSelectionWidget
 
 class SelectionWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
@@ -60,6 +61,8 @@ class SelectionWindow(QtWidgets.QMainWindow):
         self.g_x_label.setText("Gravity x (left): ")
         self.g_y_label.setText("Gravity y: ")
 
+        self.left_dyna_selector = DynaSelectionWidget("Left", parent=self)
+        self.right_dyna_selector = DynaSelectionWidget("right", parent=self)
 
         # Setup Grid.
         self.layout.addWidget(self.width_label,0,0);  self.layout.addWidget(self.width_selector,0,1)
@@ -75,6 +78,9 @@ class SelectionWindow(QtWidgets.QMainWindow):
         self.layout.addWidget(self.g_x_label, 0,4); self.layout.addWidget(self.g_x_selector, 0,5)
         self.layout.addWidget(self.g_y_label, 1,4); self.layout.addWidget(self.g_y_selector, 1,5)
         
+        self.layout.addWidget(self.left_dyna_selector, 4, 0)
+        self.layout.addWidget(self.right_dyna_selector, 4, 2)
+
         # Setup run button.
         self.runbutton = QtWidgets.QPushButton()
         self.runbutton.setText("Run")
@@ -98,13 +104,17 @@ class SelectionWindow(QtWidgets.QMainWindow):
             g_x       = float(self.g_x_selector.text())
             g_y       = float(self.g_y_selector.text())
 
-            chain = StringChain(pos, Vector(g_x,-g_y), stiffness, dampening=dampening)
+            left_dyna = self.left_dyna_selector.get_dynamics(0,0)
+            right_dyna = self.right_dyna_selector.get_dynamics(width, 0)
 
-            self.display = MainWindow(width, pad, height, chain, time_step=time_step, speedup=speedup)
+            chain = StringChain(pos, Vector(g_x,-g_y), stiffness, dampening=dampening,
+                                            left_dyna=left_dyna, right_dyna=right_dyna)
+
+            self.display = MainWindow(width, pad, height, chain, time_step=time_step, speedup=speedup*2)
             self.display.show()
         except:
-            # Insert error screen here.
             pass
+
             
 
 if __name__ == '__main__':
