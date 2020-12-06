@@ -10,8 +10,9 @@ from StringChain import StringChain
 from Vector import Vector
 
 class StringSimWidget(QWidget):
-    def __init__(self, width, width_padding, height, chain, *args, **kwargs):
+    def __init__(self, width, width_padding, height, chain, tick=100, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.tick = tick
         self.layout = QGridLayout()
         self.setLayout(self.layout)
 
@@ -30,7 +31,7 @@ class StringSimWidget(QWidget):
   
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.step)
-        self.timer.start(50)
+        self.timer.start(self.tick)
         
         #self.loop()
 

@@ -26,7 +26,7 @@ pos = [Vector(i*10, 0) for i in range(50+1)]
 chain = StringChain(pos, Vector(0,0), 4, dampening=0.1, left_dyna=bdd_sin_dyna)
 
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self, width, width_padding, height, chain, time_step=0.1, parent=None):
+    def __init__(self, width, width_padding, height, chain, time_step=0.1, speedup=1, parent=None):
         super().__init__(parent)
         self.ts = time_step
 
@@ -35,7 +35,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(self.window) 
         self.window.setLayout(self.layout)
 
-        self.display_widget = StringSimWidget(width, width_padding, height, chain)
+        self.display_widget = StringSimWidget(width, width_padding, height, chain, int(1000*self.ts / speedup))
 
         self.layout.addWidget(self.display_widget, 0, 0)
 
