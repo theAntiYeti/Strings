@@ -8,14 +8,14 @@ class Render:
         self.mid_y = height // 2
 
     def plot_points(self, points):
-        canvas = Image.new("RGB", (2*self.wp + self.width, self.height), "#FFFFFF")
+        canvas = Image.new("RGB", (2*self.wp + self.width, self.height), "#000000")
         n = len(points)
         draw = ImageDraw.Draw(canvas)
 
         for i in range(n-1):
             a = points[i]
             b = points[i+1]
-            draw.line((a[0] + self.wp, self.mid_y - a[1], b[0] + self.wp, self.mid_y - b[1]), fill=128)
+            draw.line((a[0] + self.wp, self.mid_y - a[1], b[0] + self.wp, self.mid_y - b[1]), fill="#7DF977")
         return canvas
 
 if __name__ == "__main__":

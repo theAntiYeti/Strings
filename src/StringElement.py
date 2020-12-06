@@ -26,10 +26,13 @@ class StringElement:
         # Tension to left spring
         new_le        = self.left.pos - self.pos
         f_left        = new_le.scale(self.sc)
+
+        # Calculate dampening force on the left spring.
         delta_le      = (new_le - self.left_extension).scale(1/time_step)
         f_d_left      = delta_le.scale(self.damp)
         self.left_extension = new_le
 
+        # Calculate dampening force on right spring.
         new_re        = self.right.pos - self.pos
         f_right       = new_re.scale(self.sc)
         delta_re      = (new_re - self.right_extension).scale(1/time_step)
