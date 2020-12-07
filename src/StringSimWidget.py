@@ -10,20 +10,20 @@ from StringChain import StringChain
 from Vector import Vector
 
 class StringSimWidget(QWidget):
-    def __init__(self, width, width_padding, height, chain, tick=100, *args, **kwargs):
+    def __init__(self, width, width_padding, height, chain, tick=100, do_blur=False, color='#FF7700', *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tick = tick
         self.layout = QGridLayout()
         self.setLayout(self.layout)
 
-        self.renderer = Render(width, width_padding, height)
+        self.renderer = Render(width, width_padding, height, do_blur=do_blur, color=color)
 
         self.display  = QLabel()
 
         self.modelChain = chain
         
-        canvas = self.renderer.plot_points(self.modelChain.positions())
-        self.pix = QtGui.QPixmap.fromImage(ImageQt(canvas))
+        self.canvas = self.renderer.plot_points(self.modelChain.positions())
+        self.pix = QtGui.QPixmap.fromImage(ImageQt(self.canvas))
 
         self.display.setPixmap(self.pix)
 
@@ -36,8 +36,8 @@ class StringSimWidget(QWidget):
         #self.loop()
 
     def plot(self, points):
-        canvas = self.renderer.plot_points(points)
-        qtCanvas = ImageQt(canvas)
+        self.canvas = self.renderer.plot_points(points, previous=self.canvas)
+        qtCanvas = ImageQt(self.canvas)
         self.pix = QtGui.QPixmap.fromImage(qtCanvas)
         self.display.setPixmap(self.pix)
 

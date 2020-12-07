@@ -9,6 +9,10 @@ from StringChain import StringChain
 from MainWindow import MainWindow
 from DynaSelectionWidget import DynaSelectionWidget
 
+from Division1 import Division1
+from Division2 import Division2
+from InputWidget import InputWidget
+
 class SelectionWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -21,65 +25,36 @@ class SelectionWindow(QtWidgets.QMainWindow):
         self.window.setLayout(self.layout)
 
         # Create entries.
-        self.width_selector = QtWidgets.QLineEdit()
-        self.pad_selector   = QtWidgets.QLineEdit()
-        self.height_selector= QtWidgets.QLineEdit()
-        self.number_selector= QtWidgets.QLineEdit()
+        self.division1 = Division1(parent=self)
+        self.division2 = Division2(parent=self)
 
-        self.stiff_selector = QtWidgets.QLineEdit()
-        self.ts_selector    = QtWidgets.QLineEdit()
-        self.su_selector    = QtWidgets.QLineEdit() # Speedup
-        self.damp_selector  = QtWidgets.QLineEdit()
-
-        self.g_x_selector   = QtWidgets.QLineEdit()
-        self.g_y_selector   = QtWidgets.QLineEdit()
-
-        # Create labels.
-        self.width_label    = QtWidgets.QLabel()
-        self.pad_label      = QtWidgets.QLabel()
-        self.height_label   = QtWidgets.QLabel()
-        self.number_label   = QtWidgets.QLabel()
-
-        self.stiff_label    = QtWidgets.QLabel()
-        self.ts_label       = QtWidgets.QLabel()
-        self.su_label       = QtWidgets.QLabel()
-        self.damp_label     = QtWidgets.QLabel()
-
-        self.g_x_label      = QtWidgets.QLabel()
-        self.g_y_label      = QtWidgets.QLabel()
-
-        self.width_label.setText("Width: ")
-        self.height_label.setText("Height: ")
-        self.pad_label.setText("Padding: ")
-        self.number_label.setText("No. elements: ")
-
-        self.stiff_label.setText("Stiffness: ")
-        self.ts_label.setText("Time Step: ")
-        self.su_label.setText("Speed Up: ")
-        self.damp_label.setText("Dampening: ")
-
-        self.g_x_label.setText("Gravity x (left): ")
-        self.g_y_label.setText("Gravity y: ")
+        self.g_x_input   = InputWidget("Gravity x (left)", default="0", parent=self)
+        self.g_y_input   = InputWidget("Gravity y", default="1", parent=self)
 
         self.left_dyna_selector = DynaSelectionWidget("Left", parent=self)
         self.right_dyna_selector = DynaSelectionWidget("right", parent=self)
 
+        self.blur_label = QtWidgets.QLabel()
+        self.blur_label.setText("blur")
+        self.blur_check = QtWidgets.QCheckBox()
+
+        self.color_input = InputWidget("Colour", default="FF7700", stringInput=True, parent=self)
+
         # Setup Grid.
-        self.layout.addWidget(self.width_label,0,0);  self.layout.addWidget(self.width_selector,0,1)
-        self.layout.addWidget(self.height_label,1,0); self.layout.addWidget(self.height_selector,1,1)
-        self.layout.addWidget(self.pad_label,2,0);    self.layout.addWidget(self.pad_selector,2,1)
-        self.layout.addWidget(self.number_label,3,0); self.layout.addWidget(self.number_selector,3,1)
+        self.layout.addWidget(self.division1, 0, 0)
+        self.layout.addWidget(self.division2, 0, 1)
 
-        self.layout.addWidget(self.stiff_label,0,2); self.layout.addWidget(self.stiff_selector,0,3)
-        self.layout.addWidget(self.ts_label,1,2); self.layout.addWidget(self.ts_selector,1,3)
-        self.layout.addWidget(self.su_label,2,2); self.layout.addWidget(self.su_selector,2,3)
-        self.layout.addWidget(self.damp_label,3,2); self.layout.addWidget(self.damp_selector,3,3)
+        self.layout.addWidget(self.g_x_input, 1,0)
+        self.layout.addWidget(self.g_y_input, 2,0)
 
-        self.layout.addWidget(self.g_x_label, 0,4); self.layout.addWidget(self.g_x_selector, 0,5)
-        self.layout.addWidget(self.g_y_label, 1,4); self.layout.addWidget(self.g_y_selector, 1,5)
+        self.layout.addWidget(self.color_input, 1, 1)
+
         
         self.layout.addWidget(self.left_dyna_selector, 4, 0)
-        self.layout.addWidget(self.right_dyna_selector, 4, 2)
+        self.layout.addWidget(self.right_dyna_selector, 4, 1)
+
+
+        self.layout.addWidget(self.blur_label, 4,3); self.layout.addWidget(self.blur_check, 4,4)
 
         # Setup run button.
         self.runbutton = QtWidgets.QPushButton()
@@ -89,28 +64,24 @@ class SelectionWindow(QtWidgets.QMainWindow):
     
     def submit_selection(self):
         try:
-            width = int(self.width_selector.text())
-            pad   = int(self.pad_selector.text())
-            height = int(self.height_selector.text())
-            number = int(self.number_selector.text())
-
+            width, height, pad, number = self.division1.parse()
+            stiffness, time_step, speedup, dampening = self.division2.parse()
             pos = [Vector(width*(i/(number-1)), 0) for i in range(number-1)]
 
-            stiffness = float(self.stiff_selector.text())
-            time_step = float(self.ts_selector.text())
-            speedup   = float(self.su_selector.text())
-            dampening = float(self.damp_selector.text())
-
-            g_x       = float(self.g_x_selector.text())
-            g_y       = float(self.g_y_selector.text())
+            g_x       = self.g_x_input.parse()
+            g_y       = self.g_y_input.parse()
 
             left_dyna = self.left_dyna_selector.get_dynamics(0,0)
             right_dyna = self.right_dyna_selector.get_dynamics(width, 0)
 
+            color = '#'+self.color_input.parse()
+
+            do_blur = self.blur_check.isChecked()
+            
             chain = StringChain(pos, Vector(g_x,-g_y), stiffness, dampening=dampening,
                                             left_dyna=left_dyna, right_dyna=right_dyna)
 
-            self.display = MainWindow(width, pad, height, chain, time_step=time_step, speedup=speedup*2)
+            self.display = MainWindow(width, pad, height, chain, time_step=time_step, speedup=speedup*2, do_blur=do_blur, color=color)
             self.display.show()
         except:
             pass
