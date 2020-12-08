@@ -13,6 +13,7 @@ class InputWidget(QtWidgets.QWidget):
 
     def init_gui(self, default):
         self.layout = QtWidgets.QGridLayout()
+        self.layout.setContentsMargins(0,0,0,0)
         self.setLayout(self.layout)
 
         self.label = QtWidgets.QLabel()
@@ -21,6 +22,7 @@ class InputWidget(QtWidgets.QWidget):
 
         self.layout.addWidget(self.label, 0, 0)
         self.layout.addWidget(self.entry, 0, 1)
+
 
     def parse(self):
         txt = self.entry.text()

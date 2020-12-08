@@ -43,6 +43,8 @@ class DynaSelectionWidget(QtWidgets.QWidget):
         self.layout.addWidget(self.ts_label, 3, 0); self.layout.addWidget(self.ts_selector, 3, 1)
         self.layout.addWidget(self.phase_label, 4, 0); self.layout.addWidget(self.phase_selector, 4, 1)
 
+        print(self.xn_label.geometry())
+        #print(self.xn_selector.geometry())
     def selectionchange(self, i):
         if i == 1:
             self.xn_label.setText("x scale")
@@ -64,7 +66,7 @@ class DynaSelectionWidget(QtWidgets.QWidget):
             return circular(x_0, y_0, x_scale, y_scale, time_scale=t_scale, phase=phase)
 
         elif i == 2:
-            n       = int(self.xn_selector.text())
+            n       = float(self.xn_selector.text())
             y_scale = float(self.y_selector.text())
             t_scale = float(self.ts_selector.text())
             phase   = float(self.phase_selector.text())

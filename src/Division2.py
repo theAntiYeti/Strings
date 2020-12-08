@@ -15,6 +15,7 @@ class Division2(QtWidgets.QWidget):
     def init_gui(self):
         self.layout = QtWidgets.QGridLayout()
         self.setLayout(self.layout)
+        self.layout.setSpacing(0)
 
         self.width_input  = InputWidget("Stiffness", default="15", parent=self)
         self.height_input = InputWidget("Time step", default="0.1", parent=self)
