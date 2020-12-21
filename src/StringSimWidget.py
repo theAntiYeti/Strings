@@ -43,6 +43,7 @@ class StringSimWidget(QWidget):
 
     def step(self, time_step=0.2):
         self.modelChain.step(time_step)
+        print(self.modelChain.kinetic_energy())
         positions = self.modelChain.positions()
         self.plot(positions)
     

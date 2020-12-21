@@ -29,3 +29,6 @@ class Vector:
         if round:
             return (int(self.x), int(self.y))
         return (self.x, self.y)
+
+    def norm_sq(self):
+        return (self.x ** 2) + (self.y ** 2)

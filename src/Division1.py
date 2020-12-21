@@ -26,7 +26,6 @@ class Division1(QtWidgets.QWidget):
         self.layout.addWidget(self.pad_input, 2, 0)
         self.layout.addWidget(self.numel_input, 3, 0)
 
-        print(self.geometry())
     
     def parse(self):
         width = self.width_input.parse()

@@ -21,3 +21,6 @@ class StringEnd:
         self.t += k
         if self.dynamics:
             self.pos = self.dynamics(self.t)
+
+    def kinetic_energy(self):
+        return 0

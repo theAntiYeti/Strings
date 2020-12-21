@@ -25,6 +25,12 @@ class StringChain:
 
     def positions(self):
         return [point.pos.to_tuple(round=True) for point in self.points]
+    
+    def kinetic_energy(self):
+        total = 0
+        for point in self.points:
+            total += point.kinetic_energy()
+        return total
 
 from render import Render
 

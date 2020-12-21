@@ -46,3 +46,6 @@ class StringElement:
     
     def update_position(self, time_step):
         self.pos += self.vel.scale(time_step)
+
+    def kinetic_energy(self):
+        return 0.5 * self.vel.norm_sq()
