@@ -16,7 +16,7 @@ class StringSimWidget(QWidget):
         self.layout = QGridLayout()
         self.setLayout(self.layout)
 
-        self.renderer = Render(width, width_padding, height, do_blur=do_blur, color=color)
+        self.renderer = Render(width, width_padding, height, do_blur=do_blur, color_high=color)
 
         self.display  = QLabel()
 
@@ -32,20 +32,28 @@ class StringSimWidget(QWidget):
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.step)
         self.timer.start(self.tick)
+
+        # Thing for colour changing on energy
+        self.max_energy_seen = 0
         
         #self.loop()
 
-    def plot(self, points):
-        self.canvas = self.renderer.plot_points(points, previous=self.canvas)
+    def plot(self, points, dark_q):
+        self.canvas = self.renderer.plot_points(points, dark_q=dark_q, previous=self.canvas)
         qtCanvas = ImageQt(self.canvas)
         self.pix = QtGui.QPixmap.fromImage(qtCanvas)
         self.display.setPixmap(self.pix)
 
     def step(self, time_step=0.2):
         self.modelChain.step(time_step)
-        print(self.modelChain.kinetic_energy())
+        ke = self.modelChain.kinetic_energy()
+        if ke > self.max_energy_seen:
+            self.max_energy_seen = ke
+
+        dark_q = ke / self.max_energy_seen # Quotient of brightness
+
         positions = self.modelChain.positions()
-        self.plot(positions)
+        self.plot(positions, dark_q)
     
     def loop(self, delay=0.05):
         for i in range(10):

@@ -13,6 +13,11 @@ from Division1 import Division1
 from Division2 import Division2
 from InputWidget import InputWidget
 
+
+####
+# TODO:
+# Make window exit clean up simulation
+
 class SelectionWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
