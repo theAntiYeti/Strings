@@ -15,6 +15,8 @@ class StringChain:
         self.points[0].link(self.points[1])
         self.points[-1].link(self.points[-2])
 
+        self.max_energy = 1
+
     def step(self, time_step):
         for point in self.points:
             point.update_acceleration(time_step)
@@ -31,6 +33,20 @@ class StringChain:
         for point in self.points:
             total += point.kinetic_energy()
         return total
+
+    def dark_qs(self, stress_mode=False):
+        fact = (1/3)
+        if stress_mode:
+            energy = [point.stress() for point in self.points]
+            fact = 2
+        else:
+            energy = [point.kinetic_energy() for point in self.points]
+        m = max(energy)
+
+        if m > self.max_energy:
+            self.max_energy = m
+        return [(x / (m+0.01))**(fact) for x in energy]
+
 
 from render import Render
 

@@ -49,3 +49,6 @@ class StringElement:
 
     def kinetic_energy(self):
         return 0.5 * self.vel.norm_sq()
+
+    def stress(self):
+        return ((self.left.pos - self.pos).norm_sq())**(1/2) + ((self.right.pos - self.pos).norm_sq())**(1/2)

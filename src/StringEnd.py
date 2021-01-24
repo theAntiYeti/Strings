@@ -24,3 +24,6 @@ class StringEnd:
 
     def kinetic_energy(self):
         return 0
+
+    def stress(self):
+        return 2*((self.next_el.pos - self.pos).norm_sq())**(1/2)

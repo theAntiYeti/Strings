@@ -24,7 +24,7 @@ class Render:
         self.Gh = int(color_high[3:5],16)
         self.Bh = int(color_high[5:7],16)
 
-    def plot_points(self, points, dark_q=1, previous=None):
+    def plot_points(self, points, dark_qs=None, previous=None):
         if self.blur and previous:
             canvas = previous.point(lambda x: x*0.75)
         else:
@@ -33,10 +33,16 @@ class Render:
         draw = ImageDraw.Draw(canvas)
 
         # Calculate darkened colour
-        color = self.scale_color(dark_q)
         for i in range(n-1):
             a = points[i]
             b = points[i+1]
+
+            if dark_qs:
+                dq = 0.5*(dark_qs[i] + dark_qs[i+1])
+                color = self.scale_color(dq)
+
+            else:
+                color = self.color
             draw.line((a[0] + self.wp, self.mid_y - a[1], b[0] + self.wp, self.mid_y - b[1]), fill=color)
         return canvas
 

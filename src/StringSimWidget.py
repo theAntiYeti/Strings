@@ -10,13 +10,13 @@ from StringChain import StringChain
 from Vector import Vector
 
 class StringSimWidget(QWidget):
-    def __init__(self, width, width_padding, height, chain, tick=100, do_blur=False, color='#FF7700', *args, **kwargs):
+    def __init__(self, width, width_padding, height, chain, tick=100, do_blur=False, stress_mode=False, color_hot='#FF7700', color_cold='#00FFFF', *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tick = tick
         self.layout = QGridLayout()
         self.setLayout(self.layout)
 
-        self.renderer = Render(width, width_padding, height, do_blur=do_blur, color_high=color)
+        self.renderer = Render(width, width_padding, height, do_blur=do_blur, color_high=color_hot, color_low=color_cold)
 
         self.display  = QLabel()
 
@@ -33,27 +33,25 @@ class StringSimWidget(QWidget):
         self.timer.timeout.connect(self.step)
         self.timer.start(self.tick)
 
+        self.stress_mode = stress_mode
         # Thing for colour changing on energy
         self.max_energy_seen = 0
         
         #self.loop()
 
-    def plot(self, points, dark_q):
-        self.canvas = self.renderer.plot_points(points, dark_q=dark_q, previous=self.canvas)
+    def plot(self, points, dark_qs):
+        self.canvas = self.renderer.plot_points(points, dark_qs=dark_qs, previous=self.canvas)
         qtCanvas = ImageQt(self.canvas)
         self.pix = QtGui.QPixmap.fromImage(qtCanvas)
         self.display.setPixmap(self.pix)
 
     def step(self, time_step=0.2):
         self.modelChain.step(time_step)
-        ke = self.modelChain.kinetic_energy()
-        if ke > self.max_energy_seen:
-            self.max_energy_seen = ke
 
-        dark_q = ke / self.max_energy_seen # Quotient of brightness
+        dark_qs = self.modelChain.dark_qs(stress_mode=self.stress_mode)
 
         positions = self.modelChain.positions()
-        self.plot(positions, dark_q)
+        self.plot(positions, dark_qs=dark_qs)
     
     def loop(self, delay=0.05):
         for i in range(10):
